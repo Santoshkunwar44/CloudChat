@@ -1,0 +1,49 @@
+.s_userInfoImg {
+  width: 70%;
+  padding: 20px;
+}
+.s_chatInfoName {
+  letter-spacing: 1.8px;
+  font-weight: 700;
+  font-size: 1.5em;
+  margin-bottom: 10px;
+}
+.s_chatInfoTitle {
+  letter-spacing: 1.7px;
+  margin: 4px 0;
+  font-weight: 700;
+  font-size: 15px;
+  margin: 0 4px;
+}
+
+.s_chatInfoItem {
+  font-size: 15px;
+  font-weight: bold;
+  letter-spacing: 2px;
+}
+.s_chatInfoList {
+  display: flex;
+      align-items: center;
+      margin: 3px 0;
+}
+.followUser {
+  width: 135px;
+  font-size: 18px;
+  letter-spacing: 1.8px;
+
+  color: white;
+  margin: 8px 0 ;
+  padding: 6px 12px ;
+  font-weight:500;
+  border-radius: 3px;
+
+  background-color: rgb(152, 75, 224);
+}
+
+.followUser:hover{
+    color:rgb(152, 75, 224);
+    border: 2px solid rgb(152, 75, 224);;
+    background-color: white;
+    transform: scale(.9);
+
+}

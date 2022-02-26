@@ -1,0 +1,12 @@
+* {
+  margin: 0;
+  padding: 0;
+}
+
+.time {
+  color: gray;
+  font-weight: 500;
+  position: absolute;
+  font-size: 10px;
+  bottom: -10px;
+}

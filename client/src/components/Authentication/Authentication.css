@@ -1,0 +1,24 @@
+.loginItem{
+    margin: 5px 0;
+}
+
+.signupbtn{
+    margin-top: 50px;
+}
+
+.loginButton{
+    margin-top: 50px;
+    width: 125px;
+    font-size: 20px;
+
+}
+
+.tabList{
+    border: none;
+    outline: none;
+}
+
+.tabList:focus{
+    outline: none;
+    border: none;
+}

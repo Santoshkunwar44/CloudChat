@@ -1,0 +1,187 @@
+@import url("https://fonts.googleapis.com/css2?family=Kaushan+Script&family=Lato&family=Licorice&family=Montserrat&family=Open+Sans&family=Outfit:wght@300&family=Raleway:wght@300&family=Source+Sans+Pro:wght@300&display=swap");
+
+.chatMytitle {
+  font-family: "Andada Pro", serif;
+  font-weight: 600;
+  font-size: 23px;
+}
+* {
+  transition: all 0.3s ease-in-out;
+}
+::-webkit-scrollbar {
+  width: 3px;
+}
+::-webkit-scrollbar-track {
+  background-color: white;
+}
+::-webkit-scrollbar-thumb {
+  background-color: rgb(232, 230, 230);
+}
+.searchText {
+  font-weight: 600;
+  letter-spacing: 1.2px;
+  color: #4b6584;
+}
+
+.topIcons {
+  justify-content: space-between;
+  align-items: center;
+  display: flex;
+
+  width: 150px;
+}
+
+.chatNameTop {
+  font-size: 2.6em;
+  font-family: "Comforter", cursive;
+  letter-spacing: 1.9px;
+  color: #2c3a47;
+  padding-left: 50px;
+  font-weight: bold;
+}
+
+.second {
+  font-family: "Comforter", cursive;
+  color: "black";
+}
+.Notfound {
+  font-size: 30px;
+  font-weight: bold;
+  letter-spacing: 1.7px;
+}
+
+.noUserBox {
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  margin-top: 5em;
+}
+
+.noUserImg {
+  width: 150px;
+  margin: 20px 0;
+}
+.noUserImgModal {
+  width: 75px;
+  margin: 10px 0;
+}
+.chatSvg {
+  text-align: center;
+  margin-bottom: 30px;
+}
+.chatSvgImg {
+  width: 150px;
+  margin: 20px;
+}
+
+.chatSvgText {
+  font-size: 20px;
+  letter-spacing: 1.3px;
+  font-weight: bold;
+  color: #737c7c;
+}
+
+.getChat {
+  width: 125px;
+  margin: 20px 0;
+}
+
+.getChatText {
+  font-size: 1em;
+  letter-spacing: 1.7px;
+  font-weight: 600;
+  color: #726e6e;
+}
+
+.startchatImg {
+  margin-bottom: 30px;
+  width: 200px;
+}
+
+.startConversationBox {
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  margin-top: 7em;
+}
+
+.startConversationText {
+  font-size: 1em;
+  letter-spacing: 2px;
+  font-weight: 600;
+}
+.senderName {
+  font-size: 20px;
+  letter-spacing: 2px;
+}
+.senderInfo {
+  max-width: 300px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  max-height: 300px;
+}
+.senderInfoName {
+  font-size: 30px;
+  font-weight: 600;
+  letter-spacing: 2px;
+}
+.chatMemberAvatar {
+  transition: all 0.2s ease-in-out;
+}
+.chatMemberAvatar:hover {
+  transform: scale(1.3);
+}
+.selectedChat {
+  transform: scale(1.3);
+}
+.secondaryPhoto {
+  background-color: #302e2e;
+  bottom: -20px;
+  width: 100%;
+  height: 40%;
+  opacity: 0.4;
+  position: absolute;
+}
+.profileBoxfollowingBtn {
+  padding: 8px 12px;
+  background-color: #aa7bda;
+  font-weight: 100;
+  font-size: 14px;
+  color: white;
+  letter-spacing: 1.8px;
+  margin: 0 12px;
+}
+.profileBoxfollowingBtn {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.profileChangeBtn {
+  text-align: center;
+  cursor: pointer;
+  color: white;
+  letter-spacing: 1.8px;
+  padding: 8px 5px;
+  font-size: 12px;
+  background-color: #7847a8;
+  width: 130px;
+  transition: all 0.3s ease;
+  transform: scale(1.3);
+}
+
+.profileChangeBtn:hover {
+  background-color: #7d4aaf;
+  transform: scale(1.3);
+}
+.defaultAvatars {
+  font-size: 18px;
+  letter-spacing: 1.4px;
+}
+
+.avatarItem:hover {
+  margin: 0 50px;
+  cursor: pointer;
+  transform: scale(2);
+}
