@@ -31,36 +31,35 @@ export default function ProfileBoxModal({ children, fetchAgain, setFetchAgain })
     const [loadingProfilePic, setloadingProfilePic] = useState(false)
     let updatedUser;
 
+    useEffect(() => {
+        user && !user?.notfirstTimeLogged && onOpen();
+    }, [user])
+
 
     useEffect(() => {
 
         setUser(JSON.parse(localStorage.getItem("userInfo")))
-        console.log("newuser", user)
     }, [fetchAgain])
     const handleProfilePicture = async () => {
 
-        
-                    const config = {
-                        headers: {
-                            Authorization: `Bearer ${user.token}`
-                        },
-                    }
-
+        setloadingProfilePic(true)
+        const config = {
+            headers: {
+                Authorization: `Bearer ${user.token}`
+            },
+        }
         if (avatar) {
-
-
             setloadingProfilePic(true)
             updatedUser = {
                 pic: avatar
             }
             if (avatar) {
-
-
                 const { data } = await axios.put(`http://localhost:8000/api/user/${user?._id}`, updatedUser, config)
                 console.log(data)
                 if (data) {
                     let newUser = { ...user }
                     newUser.pic = avatar;
+                    newUser.notfirstTimeLogged = true;
                     localStorage.setItem("userInfo", JSON.stringify(newUser))
                     setloadingProfilePic(false)
                     setFetchAgain(!fetchAgain)
@@ -124,9 +123,11 @@ export default function ProfileBoxModal({ children, fetchAgain, setFetchAgain })
                         if (data) {
                             let newUser = { ...user }
                             newUser.pic = downloadURL;
+                            newUser.notfirstTimeLogged = true;
                             localStorage.setItem("userInfo", JSON.stringify(newUser))
                             setFetchAgain(!fetchAgain)
                             setloadingProfilePic(false)
+
                             onClose()
                         }
                     });
@@ -136,23 +137,47 @@ export default function ProfileBoxModal({ children, fetchAgain, setFetchAgain })
         }
     }
 
+    function setPic() {
+        if (file) {
+            console.log("insite the file")
+            return URL.createObjectURL(file);
+        } else if (avatar) {
+            console.log("inside the avatar")
+            return avatar;
+        } else {
+            console.log("default")
+            return user?.pic;
+        }
+
+    }
+
+    const handleClose = () => {
+        if (!user?.notfirstTimeLogged) {
+            let newUser = { ...user }
+            newUser.notfirstTimeLogged = true;
+            localStorage.setItem("userInfo", JSON.stringify(newUser))
+            setloadingProfilePic(false)
+        }
+        onClose()
+    }
+
 
 
     return (
         <>
             <span onClick={onOpen}> {children}</span>
-            <Modal isOpen={isOpen} onClose={onClose}>
+            <Modal isOpen={isOpen} onClose={handleClose}>
                 <ModalOverlay />
                 <ModalContent>
                     <ModalHeader color={"purple.500"} fontSize={"25px"} d={"flex"} justifyContent={"center"}>Change ProfiePicture</ModalHeader>
                     <ModalCloseButton />
                     <ModalBody d={"flex"} alignItems={"center"} flexDir={"column"} >
                         <Box d={"flex"} justifyContent={"space-between"} flexDir="column" alignItems={"center"}>
-                            <Image src={user?.pic} width={"150px"} margin="15px" height={"150px"} borderRadius={"full"} objectFit={"cover"} />
+                            <Image src={setPic()} width={"150px"} margin="15px" height={"150px"} borderRadius={"full"} objectFit={"cover"} />
                             <label className='profileChangeBtn' htmlFor="myfile" >
                                 Change Picture
                             </label>
-                            <input style={{ display: "none" }} type="file" onChange={(e) => setFile(e.target.files[0])} id="myfile" />
+                            <input style={{ display: "none" }} type="file" onChange={(e) => { setAvatar(null); setFile(e.target.files[0]) }} id="myfile" />
                         </Box>
                         <Box fontWeight={"700"} letterSpacing={"1.7px"} fontSize={"1.4em"} margin={"10px 0"}> OR </Box>
                         <Box textAlign={"center"} >
@@ -161,7 +186,7 @@ export default function ProfileBoxModal({ children, fetchAgain, setFetchAgain })
                                 {
                                     AvatarImg.map((e) => (
 
-                                        <Image onClick={() => setAvatar(e.img)} key={e.id} className='avatarItem' src={e?.img} width={"55px"} margin=" 0 8px " height={"55px"} borderRadius={"full"} objectFit={"cover"} />
+                                        <Image onClick={() => { setFile(null); setAvatar(e.img) }} key={e.id} className='avatarItem' src={e?.img} width={"55px"} margin=" 0 8px " height={"55px"} borderRadius={"full"} objectFit={"cover"} />
                                     ))
                                 }
 

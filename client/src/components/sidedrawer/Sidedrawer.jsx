@@ -7,7 +7,7 @@ import axios from 'axios';
 import Chatloading from "../Chat/ChatLoading/Chatloading"
 import UserListItem from '../userListItem/UserListItem';
 import Notification from '../notifications/Notification';
-import { BellIcon } from '@chakra-ui/icons';
+import { NotificationImportantOutlined, NotificationsActiveSharp } from "@material-ui/icons"
 import NotificationBadge, { Effect } from 'react-notification-badge';
 export default function Sidedrawer() {
 
@@ -30,8 +30,6 @@ export default function Sidedrawer() {
         localStorage.removeItem("userInfo");
         navigate("/")
     }
-
-
     //---------------searching the user 
     const handleClick = async () => {
 
@@ -127,31 +125,26 @@ export default function Sidedrawer() {
             </Tooltip>
 
             <Box className='topIcons'>
-
                 <Menu >
                     <MenuButton position={"relative"}>
                         <NotificationBadge
                             count={notifications.length}
                             effect={Effect.SCALE}
                         />
-
-                        <BellIcon color={"#8854d0"} fontSize={"44px"} />
+                        <NotificationsActiveSharp style={{ color: "ButtonShadow" }} fontSize={"34px"} />
                         <div style={{ position: "absolute", top: "0px", right: "0px", fontWeight: " 600", color: "red" }}> {notifications.length >= 1 && notifications.length}</div>
                     </MenuButton>
-                    <MenuList>
-                        {
-                            notifications?.map((chat) => (
-                                <MenuItem>
-                                    <Notification chats={chat} key={chat._id} setSelectedChat={setSelectedChat} />
-                                </MenuItem>
-
-                            ))
-
-                        }
-
-
-
-                    </MenuList>
+                    {
+                        !notifications.length < 1 ? <MenuList>
+                            {
+                                notifications?.map((chat) => (
+                                    <MenuItem>
+                                        <Notification chats={chat} key={chat._id} setSelectedChat={setSelectedChat} />
+                                    </MenuItem>
+                                ))
+                            }
+                        </MenuList> : <MenuList padding={"5px"}>No Notification</MenuList>
+                    }
 
                 </Menu>
                 <Menu>
@@ -174,12 +167,8 @@ export default function Sidedrawer() {
 
                 </Menu>
             </Box>
-
         </Box>
-
-
         {/* ////////////////DRAWEWWR */}
-
         <Drawer placement='left' onClose={onClose} isOpen={isOpen} >
 
             <DrawerOverlay />

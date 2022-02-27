@@ -131,34 +131,12 @@ const renameChat = asyncHandler(async (req, res) => {
 });
 
 const addUser = asyncHandler(async (req, res) => {
-
   const { chatid, userId } = req.body;
 
   const added = await Chat.findByIdAndUpdate(
     chatid,
     {
       $push: { users: userId },
-    },
-    { new: true }
-  )
-  .populate("users", "-password")
-  .populate("groupAdmin", "-password");
-
-  if (!added) {
-    res.sendStatus(400);
-    throw new Error("Chat not found");
-  } else {
-    res.status(200).send(added);
-  }
-});
-
-const removeUser = asyncHandler(async (req, res) => {
-  const { chatid, userId } = req.body;
-
-  const added = await Chat.findByIdAndUpdate(
-    chatid,
-    {
-      $pull: { users: userId },
     },
     { new: true }
   )
@@ -171,6 +149,23 @@ const removeUser = asyncHandler(async (req, res) => {
   } else {
     res.status(200).send(added);
   }
+});
+
+const removeUser = asyncHandler(async (req, res) => {
+  console.log("your are here");
+  const { chatId, userId } = req.body;
+
+  const added = await Chat.findByIdAndUpdate(
+    chatId,
+    {
+      $pull: { users: userId },
+    },
+    { new: true }
+  )
+    .populate("users", "-password")
+    .populate("groupAdmin", "-password");
+
+  res.status(200).send({ message: "succesfully removed the user " });
 });
 
 module.exports = {

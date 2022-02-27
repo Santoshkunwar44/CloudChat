@@ -105,7 +105,7 @@ export default function GroupChatModal({ children }) {
                 position: "top",
                 isClosable: true,
             })
-
+            setSelectedUsers([])
             onClose();
 
         } catch (err) {
@@ -153,7 +153,7 @@ export default function GroupChatModal({ children }) {
     return (
         <>
             <span onClick={onOpen}> {children}</span>
-            <Modal isOpen={isOpen} onClose={onClose}>
+            <Modal isOpen={isOpen} onClose={() => { setSelectedUsers([]); setSearchResults([]); onClose() }}>
                 <ModalOverlay />
                 <ModalContent>
                     <ModalHeader fontSize={"25px"} d={"flex"} justifyContent={"center"}>Create Group</ModalHeader>
@@ -189,7 +189,7 @@ export default function GroupChatModal({ children }) {
                         </div>}
                     </ModalBody>
                     <ModalFooter>
-                        <Button colorScheme='purple' onClick={handleSubmit}>
+                        <Button colorScheme='purple' onClick={handleSubmit} letterSpacing={"2px"} borderRadius={"2px"}>
                             Create
                         </Button>
                     </ModalFooter>

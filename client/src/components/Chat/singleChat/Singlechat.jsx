@@ -112,7 +112,6 @@ export default function Singlechat({ fetchAgain, setFetchAgain }) {
 
       } catch (err) {
         console.log(err)
-
         toast({
           title: 'failed to sent message.',
           status: 'error',
@@ -209,9 +208,9 @@ export default function Singlechat({ fetchAgain, setFetchAgain }) {
           </Text>
           {
             !selectedChat.isGroupChat ?
-              <ProfileModel user={getSenderFull(user, selectedChat.users)} >
+              <ProfileModel user={getSenderFull(user, selectedChat?.users)} >
                 <Image
-                  src={senderFullInfo.pic}
+                  src={senderFullInfo?.pic}
                   borderRadius={"full"}
                   w="50px"
                   height={"50px"}
@@ -242,13 +241,13 @@ export default function Singlechat({ fetchAgain, setFetchAgain }) {
 
 
             <Image
-              src={senderFullInfo.pic}
+              src={senderFullInfo?.pic}
               borderRadius={"full"}
-              w="200px"
-              height={"200px"}
+              w="150px"
+              height={"150px"}
               objectFit={"cover"}
             />
-            <p className='senderInfoName'>{senderFullInfo.userName}</p>
+            {/* <p className='senderInfoName'>{senderFullInfo?.userName}</p> */}
           </Box>
           {
             loading ? <Spinner size="xl" height={20} width={20} margin="auto " alignSelf={"center"} /> : <>
@@ -264,15 +263,13 @@ export default function Singlechat({ fetchAgain, setFetchAgain }) {
         </Box>
         {
           !loading && <FormControl position={"relative"} onKeyDown={sendMessage} isRequired mt={3} >
-            {/* {
-              istyping && <div style={{ marginTop: "30px ", width: "100%" }} ><Lottie style={{ width: "100px", top: "-30px ", left: "15px", position: "absolute" }} animationData={groovyWalkAnimation} />;</div>
-            } */}
-            <Input value={newMessages} borderRadius={"0"} variant={"filled"} border="none" borderBottom={"2px solid purple"} bg="E0E0E0" placeholder='Enter a message' onChange={(e) => typingHandler(e)} />
+        
+            <Input value={newMessages} borderRadius={"0"} opacity={"0.8"} variant={"filled"} border="none" borderBottom={"2px solid gray"} bg="E0E0E0" placeholder='Enter a message' onChange={(e) => typingHandler(e)} />
 
           </FormControl>
         }
       </>
-        : <ProfileBox setFetchAgain={ setFetchAgain} fetchAgain={fetchAgain}/>}
+        : <ProfileBox setFetchAgain={setFetchAgain} fetchAgain={fetchAgain} />}
     </Box>
   </>;
 }

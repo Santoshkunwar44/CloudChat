@@ -6,7 +6,7 @@ import GroupChatModal from '../../groupchatModal/GroupChatModal';
 import ChatMemebers from '../ChatMembers/ChatMemebers';
 
 
-export default function Mychats({ fetchAgain }) {
+export default function Mychats({ fetchAgain ,setFetchAgain}) {
 
   const { user: currUser, selectedChat, setSelectedChat, setChats, chats } = ChatState();
 
@@ -55,7 +55,7 @@ export default function Mychats({ fetchAgain }) {
     flexDir={"column"}
     alignItems={"center"}
     p={"3"}
-    width={{ base: "100%", md: selectedChat ? "10%" : "40%" }}
+    width={{ base: "100%", md: selectedChat ? "10%" : "45%" }}
     position={"sticky"}
     top={"16"}
     maxHeight={"100%"}
@@ -69,15 +69,13 @@ export default function Mychats({ fetchAgain }) {
       flexDir={"column"}
       alignItems={"center"}
       justifyContent={"space-between"}
-
     >
       <GroupChatModal display={selectedChat ? "none" : "block"}>
 
-        <Button display={selectedChat ? "none" : "flex"} width={"190px"} bg={"#a55eea"} mb={3} color={"white"} _hover={{ bg: "white", border: "2px solid #a55eea", color: "#a55eea" }} fontSize={{ md: "14px", lg: "17px", base: "17px" }} letterSpacing="1.3px">
+        <Button display={selectedChat ? "none" : "flex"} width={"190px"} bg={"#a55eea"} mb={3} color={"white"} _hover={{ bg: "white", border: "2px solid #a55eea", color: "#a55eea" }} fontSize={{ md: "14px", lg: "17px", base: "17px" }} letterSpacing="1.3px" borderRadius={"2px"}>
           Create Group
           <i style={{ fontSize: "22px", marginLeft: "10px" }} className="fas fa-plus"></i>
         </Button>
-
 
       </GroupChatModal>
 
@@ -95,7 +93,7 @@ export default function Mychats({ fetchAgain }) {
       {
         chats ?
           chats?.map((chat) => (
-            <ChatMemebers key={chat._id} chat={chat} setSelectedChat={setSelectedChat} />
+            <ChatMemebers setFetchAgain={setFetchAgain} fetchAgain={fetchAgain} key={chat._id} chat={chat} setSelectedChat={setSelectedChat} />
           ))
           : <div>No chats</div>
       }

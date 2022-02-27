@@ -1,4 +1,4 @@
-import { Button, FormControl,FormLabel, Input, InputGroup, InputRightElement, useToast, VStack } from '@chakra-ui/react';
+import { Button, FormControl, FormLabel, Input, InputGroup, InputRightElement, useToast, VStack } from '@chakra-ui/react';
 import React, { useRef, useState } from 'react';
 import "./Authentication.css"
 import axios from 'axios';
@@ -12,7 +12,6 @@ export default function Login() {
     const navigate = useNavigate();
 
     const handleLogin = async () => {
-
         setLoading(true)
         const user = {
             email: emailRef.current.value,
@@ -29,8 +28,8 @@ export default function Login() {
                 isClosable: true,
                 position: "bottom-left"
             })
-            setLoading(false)
-            localStorage.setItem("userInfo",JSON.stringify( res.data))
+            // setLoading(false)
+            localStorage.setItem("userInfo", JSON.stringify(res.data))
             res.status === 200 && navigate("/chatpage");
         } catch (err) {
             toast({
@@ -40,21 +39,19 @@ export default function Login() {
                 isClosable: true,
                 position: "bottom-left"
             })
-            setLoading(false)
+            // setLoading(false)
         }
     }
 
     return <VStack spacing={"5px"} >
-
         <FormControl className='loginItem' >
             <FormLabel htmlFor='email'>Email </FormLabel>
             <Input id='email' type='email' ref={emailRef} />
         </FormControl>
-
         <FormControl className='loginItem'>
-            <FormLabel htmlFor='email'>password</FormLabel>
+            <FormLabel htmlFor='password'>password</FormLabel>
             <InputGroup>
-                <Input id='email' type={!show ? 'password' : "text"} ref={passwordRef} />
+                <Input id='password' type={!show ? 'password' : "text"} ref={passwordRef} />
                 <InputRightElement>
                     <Button h={"1.7rem"} size={"sm"} onClick={() => setShow(!show)}>
                         {show ? "hide " : "show"}

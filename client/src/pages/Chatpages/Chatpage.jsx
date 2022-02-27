@@ -13,7 +13,7 @@ export default function Chatpage() {
 
         {user && <Sidedrawer />}
         <Box d="flex" width="100%" height={"90%"}>
-            <Mychats fetchAgain={fetchAgain} />
+            <Mychats fetchAgain={fetchAgain} setFetchAgain={setFetchAgain} />
             <Chatbox fetchAgain={fetchAgain} setFetchAgain={setFetchAgain} />
         </Box>
 
