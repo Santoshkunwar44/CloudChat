@@ -1,4 +1,4 @@
-import { Button, FormControl, FormLabel, Input, InputGroup, InputRightElement, useToast, VStack } from '@chakra-ui/react';
+import { Box, Button, FormControl, FormLabel, Input, InputGroup, InputRightElement, Text, useToast, VStack } from '@chakra-ui/react';
 import React, { useRef, useState } from 'react';
 import "./Authentication.css"
 import axios from 'axios';
@@ -28,7 +28,7 @@ export default function Login() {
                 isClosable: true,
                 position: "bottom-left"
             })
-            // setLoading(false)
+            setLoading(false)
             localStorage.setItem("userInfo", JSON.stringify(res.data))
             res.status === 200 && navigate("/chatpage");
         } catch (err) {
@@ -39,8 +39,11 @@ export default function Login() {
                 isClosable: true,
                 position: "bottom-left"
             })
-            // setLoading(false)
+            setLoading(false)
         }
+    }
+    const handleGoogleLogin = () => {
+        window.open("http://localhost:8000/auth/google", "_self");
     }
 
     return <VStack spacing={"5px"} >
@@ -59,6 +62,22 @@ export default function Login() {
                 </InputRightElement>
             </InputGroup>
         </FormControl>
+
+
+        <Box marginY={"20px"} className="loginSocialMedia">
+            <Box _hover={{ bg: "gray" }} onClick={handleGoogleLogin} borderRadius="full" padding={"8px 12px"} d="flex" alignItems={"center"} className="registerLoginBox">
+                <img className='registerLoginIcon' src="https://img.icons8.com/color/48/000000/google-logo.png" />
+                <Text letterSpacing={"2px"} marginLeft={"8px"} fontWeight="600" fontSize="22px" className='socialMediaText'>Google</Text>
+            </Box>
+            {/* <Box className="registerLoginBox">
+                <img className='registerLoginIcon' src="icons/twitter.png" alt="twitter" />
+                <span className='socialMediaText'>Twitter</span>
+            </Box>
+            <Box className="registerLoginBox">
+                <img className='registerLoginIcon' src="icons/github.png" alt="twitter" />
+                <span className='socialMediaText'>Github</span>
+            </Box> */}
+        </Box>
 
 
         <Button style={{ marginTop: "30px " }} letterSpacing={"1.3px"} width={"124px"} colorScheme={"yellow"} onClick={handleLogin} isLoading={loading} >Login</Button>

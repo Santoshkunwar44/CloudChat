@@ -8,7 +8,7 @@ export default function Chatbox({ fetchAgain, setFetchAgain }) {
 
   const { selectedChat } = ChatState();
   return <Box
-    d={{ base: selectedChat ? "flex" : "none", md: "flex" }}
+    d={{ base: selectedChat ? "flex" : null, md: "flex" }}
     width={{ base: "100%", md: "100%" }}
     bg={"white"}
     height={"100%"}
@@ -16,7 +16,7 @@ export default function Chatbox({ fetchAgain, setFetchAgain }) {
 
   >
     <Singlechat fetchAgain={fetchAgain} setFetchAgain={setFetchAgain} />
-    <SingleUserInfo/>
+    <SingleUserInfo />
 
 
   </Box>

@@ -3,8 +3,7 @@ import React, { useRef, useState } from 'react';
 import "./Authentication.css"
 import axios from "axios"
 import { useToast } from '@chakra-ui/react'
-import { getDownloadURL, getStorage, ref, uploadBytesResumable } from "firebase/storage";
-import { app } from '../../config/firebase';
+import { useNavigate } from 'react-router-dom';
 
 export default function Register() {
 
@@ -14,6 +13,7 @@ export default function Register() {
   const emailRef = useRef();
   const passwordRef = useRef();
   const usernameRef = useRef();
+  const navigate = useNavigate()
 
   const toast = useToast()
 
@@ -28,13 +28,6 @@ export default function Register() {
 
     }
     try {
-
-
-
-
-    
-
-
 
 
       const res = await axios.post("http://localhost:8000/api/user/register", user)
@@ -52,6 +45,7 @@ export default function Register() {
       usernameRef.current.value = ""
       emailRef.current.value = ""
       passwordRef.current.value = ""
+      navigate("/login");
       localStorage.setItem("userItem", JSON.stringify(res.data));
 
 

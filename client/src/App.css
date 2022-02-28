@@ -32,11 +32,9 @@
 }
 
 .chatNameTop {
-  font-size: 2.6em;
   font-family: "Comforter", cursive;
   letter-spacing: 1.9px;
   color: #2c3a47;
-  padding-left: 50px;
   font-weight: bold;
 }
 
@@ -129,12 +127,7 @@
 .chatMemberAvatar {
   transition: all 0.2s ease-in-out;
 }
-.chatMemberAvatar:hover {
-  transform: scale(1.3);
-}
-.selectedChat {
-  transform: scale(1.3);
-}
+
 .secondaryPhoto {
   background-color: #302e2e;
   bottom: -20px;
@@ -184,4 +177,7 @@
   margin: 0 50px;
   cursor: pointer;
   transform: scale(2);
+}
+.chatMembers:hover {
+  transform: scale(1.005);
 }

@@ -152,7 +152,6 @@ const addUser = asyncHandler(async (req, res) => {
 });
 
 const removeUser = asyncHandler(async (req, res) => {
-  console.log("your are here");
   const { chatId, userId } = req.body;
 
   const added = await Chat.findByIdAndUpdate(
@@ -168,6 +167,27 @@ const removeUser = asyncHandler(async (req, res) => {
   res.status(200).send({ message: "succesfully removed the user " });
 });
 
+const deleteChat = asyncHandler(async (req, res) => {
+  const { userId, chatId, deletedAt } = req.body;
+  const deleteChatObj = {
+    chatId,
+    deletedAt,
+  };
+
+  try {
+    const user = await User.findByIdAndUpdate(
+      userId,
+      {
+        $push: { deletedChat: deleteChatObj },
+      },
+      { new: true }
+    );
+
+    res.status(200).send(user);
+  } catch (err) {
+    res.status(500).send(err);
+  }
+});
 module.exports = {
   chatAccess,
   fetchChat,
@@ -175,4 +195,5 @@ module.exports = {
   renameChat,
   addUser,
   removeUser,
+  deleteChat,
 };

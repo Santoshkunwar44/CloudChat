@@ -107,24 +107,58 @@ export default function Sidedrawer() {
 
     return <>
         <Box d="flex"
-            justifyContent={"space-between"}
             bg={"white"}
             position={"sticky"}
             top={"0"}
+            alignItems={"center"}
             zIndex={"88"}
             height={"10vh"}
-            padding={"10px 14px"}>
+            padding={{ base: "10px 0 ", md: "10px 15px" }}>
 
-            <Text className='chatNameTop'>
-                Cloud Chat  |
-            </Text>
 
-            <Tooltip label="Search users to chat">
-                <Button width={"300px"} border={"2px solid #8c7ae6"} onClick={onOpen} variant={"ghost"}><i className="fas fa-search"></i> <Text px={"4"} className="searchText"> Search for Friends</Text></Button>
+            <Box alignItems={"center"} d="flex" justifyContent={"space-between"} flex={[
+                "7",
+                "9",
+                "8",
+                "8"
 
-            </Tooltip>
+            ]}>
+                <Box textAlign="center" padding={"0 20px"} fontSize={[
+                    '17px', // 0-30em
+                    '20px', // 30em-48em
+                    '2em', // 48em-62em
+                    '2.3em', // 62em+
+                ]} className='chatNameTop' display={[
+                    "none",
+                    "block",
+                    "block",
+                    "block",
+                ]}>
+                    Cloud Chat
+                </Box>
+                <Tooltip label="Search users to chat">
+                    <Button padding={"5px 15px"} width={["200px", "300px", "250px", "300px"]} border={"2px solid #8c7ae6"} onClick={onOpen} variant={"ghost"}>
+                        <i style={{ marginLeft: "20px" }} className="fas fa-search" ></i>
+                        <Text fontSize={[
+                            "15px",
+                            "12px",
+                            "14px",
+                            "20px"
+                        ]} px={"4"} className=""> Search for new Friends </Text></Button>
 
-            <Box className='topIcons'>
+                </Tooltip>
+
+            </Box>
+
+
+            <Box d="flex" justifyContent={"space-between"} padding={"0 15px"} className='topIcons' flex={
+                [
+                    "5",
+                    "3",
+                    "4",
+                    "4",
+                ]
+            }>
                 <Menu >
                     <MenuButton position={"relative"}>
                         <NotificationBadge
@@ -148,7 +182,7 @@ export default function Sidedrawer() {
 
                 </Menu>
                 <Menu>
-                    <MenuButton as={Button} padding={"2 3"} d="flex" alignItems={"center"} >
+                    <MenuButton as={Button} padding={""} d="flex" alignItems={"center"} >
                         <i style={{ fontSize: "23px", marginRight: "15px" }} className="fas fa-angle-down"></i>
                         <Avatar size="sm" cursor="pointer" name={user.userName} src={user.pic} />
                     </MenuButton>

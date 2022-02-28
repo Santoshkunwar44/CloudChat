@@ -1,4 +1,12 @@
-const { chatAccess, fetchChat, createGroupChat, renameChat, addUser, removeUser } = require("../controller/chatcontroller");
+const {
+  chatAccess,
+  fetchChat,
+  createGroupChat,
+  renameChat,
+  addUser,
+  removeUser,
+  deleteChat,
+} = require("../controller/chatcontroller");
 const protect = require("../middlewares/authmiddleware");
 
 const router = require("express").Router();
@@ -10,5 +18,6 @@ router.route("/createGroupChat").post(protect, createGroupChat);
 router.route("/rename").put(protect, renameChat);
 router.route("/adduser").put(protect, addUser);
 router.route("/removeuser").put(protect, removeUser);
+router.route("/deletechat").put(protect, deleteChat);
 
 module.exports = router;

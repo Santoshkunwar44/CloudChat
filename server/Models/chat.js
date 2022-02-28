@@ -15,6 +15,10 @@ const chatSchema = new mongoose.Schema(
       type: mongoose.Schema.Types.ObjectId,
       ref: "Message",
     },
+    isMuted: {
+      type: Boolean,
+      default: false,
+    },
     groupAdmin: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",

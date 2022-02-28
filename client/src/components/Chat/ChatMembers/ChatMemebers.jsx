@@ -6,7 +6,7 @@ import "../../../Sec_app.js"
 import { MoreVert } from "@material-ui/icons"
 import axios from 'axios';
 
-export default function ChatMemebers({ chat, setFetchAgain, fetchAgain }) {
+export default function ChatMemebers({ chat, setFetchAgain, fetchAgain, setChats }) {
 
     const { user: currUser, selectedChat, setSelectedChat, } = ChatState();
     const [showOptions, setShowOptions] = useState(false)
@@ -18,12 +18,7 @@ export default function ChatMemebers({ chat, setFetchAgain, fetchAgain }) {
     }, [currUser, chat])
 
     const handleOption = () => {
-
         setShowOptions(true)
-        console.log("ehy")
-
-
-
     }
     const mouseLeaveHandle = () => {
         setShowOptions(false)
@@ -56,8 +51,65 @@ export default function ChatMemebers({ chat, setFetchAgain, fetchAgain }) {
             }
         }
     }
-    console.log(chat.isGroupChat)
-    console.log("ites", setFetchAgain)
+
+
+    const handleDeleteChat = async () => {
+
+        const config = {
+            headers: {
+                Authorization: `Bearer ${currUser.token}`
+            }
+        }
+        const body = {
+            userId: currUser._id,
+            chatId: chat._id,
+            deletedAt: Date.now(),
+        }
+
+        try {
+
+            const { data } = await axios.put("http://localhost:8000/api/chat/deleteChat", body, config)
+            if (data) {
+                setChats((prev) => prev.filter((item) => {
+                    return item._id !== chat?._id
+                }))
+
+                let newUser = { ...currUser }
+
+                let ide = chat._id;
+
+                if (newUser.deletedChat?.length >= 1) {
+                    if (newUser.deletedChat.some((e) => e.chatId !== ide)) {
+                        newUser.deletedChat.push(body)
+                    }
+                } else {
+                    console.log("does not haave deleted chat")
+                    newUser.deletedChat = [body]
+                }
+
+                localStorage.setItem("userInfo", JSON.stringify(newUser))
+                // setFetchAgain(!fetchAgain)
+                toast({
+                    title: 'You deleted the group.',
+                    status: 'success',
+                    duration: 3000,
+                    position: "top-left",
+                    isClosable: true,
+                })
+            }
+
+        } catch (err) {
+            toast({
+
+                title: 'Failed to delete  the group.',
+                status: 'error',
+                duration: 3000,
+                position: "top-left",
+                isClosable: true,
+            })
+        }
+    }
+
     return <Box
         onClick={() => { !option && setSelectedChat(chat) }}
         cursor={"pointer"}
@@ -69,9 +121,11 @@ export default function ChatMemebers({ chat, setFetchAgain, fetchAgain }) {
         width={"100%"}
         alignItems={"center"}
         justifyContent={selectedChat && "center"}
+        transition="all .2s ease-in"
         d={"flex"}
         py="5px"
         px="6px"
+        bg={selectedChat?._id === chat?._id && "purple.200"}
         className='chatMembers'
         marginTop={selectedChat ? "2" : "2"}
         onMouseEnter={() => { handleOption() }}
@@ -90,8 +144,6 @@ export default function ChatMemebers({ chat, setFetchAgain, fetchAgain }) {
             </Text>
             <Text className='latestMessage' letterSpacing={"1.2px"} color={"#353b48"} fontWeight={600} fontSize={"12px"}  >{chat.latestMessage?.content}</Text>
             {showOptions && <>
-
-
                 <Popover  >
                     <PopoverTrigger>
                         {/* <Button  position={"absolute"} top={"5px"} right={"20px"} onClick={handleChatOption}>Trigger</Button> */}
@@ -99,7 +151,7 @@ export default function ChatMemebers({ chat, setFetchAgain, fetchAgain }) {
                     </PopoverTrigger>
                     <Portal z-index={'1'}>
                         <PopoverContent onMouseLeave={() => setOption(false)} onMouseOver={() => setOption(true)}>
-                            <Box padding={"12px 5px"} fontWeight={"600"} _hover={{ bg: "purple.100", boxShadow: " 0 1px 2px 0 #a29bfe, 0 1px 3px 1px #a29bfe" }} cursor={"pointer"} letterSpacing={"1.4px"} fontSize="18px">Delete Chat</Box>
+                            <Box padding={"12px 5px"} fontWeight={"600"} _hover={{ bg: "purple.100", boxShadow: " 0 1px 2px 0 #a29bfe, 0 1px 3px 1px #a29bfe" }} cursor={"pointer"} letterSpacing={"1.4px"} fontSize="18px" onClick={handleDeleteChat}>Delete Chat</Box>
                             <Box padding={"12px 5px"} fontWeight={"600"} _hover={{ bg: "purple.100", boxShadow: " 0 1px 2px 0 #a29bfe, 0 1px 3px 1px #a29bfe" }} cursor={"pointer"} letterSpacing={"1.4px"} >Mute Chat</Box>
                             {
 

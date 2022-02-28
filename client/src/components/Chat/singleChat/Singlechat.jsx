@@ -1,7 +1,7 @@
-import { Box, FormControl, IconButton, Image, Input, Spinner, Text, useToast } from '@chakra-ui/react';
+import { Box, Drawer, DrawerBody, DrawerContent, DrawerHeader, DrawerOverlay, FormControl, IconButton, Image, Input, Spinner, Text, useToast } from '@chakra-ui/react';
 import { ArrowBackIcon } from "@chakra-ui/icons"
 import React, { useEffect, useRef, useState } from 'react';
-import { getSender, getSenderFull } from "../../../config/senderLogic"
+import { getSender, getSenderFull, getSenderId } from "../../../config/senderLogic"
 import GroupChatModel from "../../groupchatModal/GroupChatModal"
 import ProfileModel from "../../profilemodel/Profilemodel"
 import axios from 'axios';
@@ -10,6 +10,8 @@ import ScrollabeChat from '../../reactScrollabeChat/ScrollabeChat';
 import { io } from "socket.io-client"
 import { ChatState } from '../../../context/Chatprovider';
 import { ProfileBox } from "../../profileBox/ProfileBox"
+import { useDisclosure } from "@chakra-ui/react"
+import { Check, MoreVert } from '@material-ui/icons';
 export default function Singlechat({ fetchAgain, setFetchAgain }) {
 
   const socket = useRef();
@@ -20,8 +22,8 @@ export default function Singlechat({ fetchAgain, setFetchAgain }) {
   const [typing, setTyping] = useState(false)
   const [socketconnected, setSocketConnected] = useState(false)
   const [senderFullInfo, setSenderFullInfo] = useState([])
-  const [dbNotifications, setdbNotifications] = useState([])
   const toast = useToast();
+  const { isOpen, onOpen, onClose } = useDisclosure()
 
   useEffect(() => {
     socket.current = io("ws://localhost:8000");
@@ -29,8 +31,6 @@ export default function Singlechat({ fetchAgain, setFetchAgain }) {
     socket.current.on("connection", () => {
       setSocketConnected(true)
     })
-
-
   }, [user])
 
 
@@ -96,16 +96,7 @@ export default function Singlechat({ fetchAgain, setFetchAgain }) {
         }, config);
 
 
-        // const setnotificationsApi = await axios.post("http://localhost:8000/api/notification", {
-        //   message: data._id,
-        //   typeOf: "message",
-        //   users: [
-        //     user._id,
-        //     getSenderFull(user, selectedChat.users)
-        //   ]
-        // })
 
-        // setnotificationsApi.data && setdbNotifications([setnotificationsApi.data, ...dbNotifications])
 
         setMessages([...messages, data])
         socket.current.emit("new Message", data)
@@ -172,6 +163,77 @@ export default function Singlechat({ fetchAgain, setFetchAgain }) {
 
   }, [selectedChat, user])
 
+
+
+
+  const [selectedUserId, setSelectedUser] = useState(null)
+  const [selectedUserObj, setSelectedUserObj] = useState({})
+  const [followed, setfollowed] = useState(null)
+
+  console.log(user?.followings.includes(selectedUserId), followed)
+
+
+
+  useEffect(() => {
+
+    if (user && selectedChat) {
+      setSelectedUser(getSenderId(user, selectedChat?.users));
+      setSelectedUserObj(getSenderFull(user, selectedChat?.users))
+    }
+
+    if (user?.followings.includes(selectedUserId)) {
+      setfollowed(true)
+      console.log("setting true")
+    } else {
+      setfollowed(false)
+      console.log("setting false")
+    }
+
+  }, [user, selectedChat, selectedUserId])
+
+  const handleFollow = async (id) => {
+
+    const config = {
+      headers: {
+        Authorization: `Bearer ${user.token}`
+      },
+    }
+    const userId = {
+      userId: user?._id
+    }
+
+    try {
+
+      const res = followed ? await axios.post(`http://localhost:8000/api/user/${id}/unfollow`, userId, config) : await axios.post(`http://localhost:8000/api/user/${id}/follow`, userId, config)
+      let newuser = { ...user }
+
+      if (res.data) {
+        if (followed) {
+          console.log("unfollowed")
+          var newFollowings = newuser.followings.filter((e) => e !== id)
+          newuser.followings = newFollowings;
+        } else {
+          console.log("pushed")
+          if (!newuser.followings.includes(id)) {
+            newuser.followings.push(id)
+          }
+
+        }
+        console.log(newuser)
+        localStorage.setItem("userInfo", JSON.stringify(newuser))
+      }
+
+
+
+      setfollowed(!followed)
+    } catch (err) {
+      console.log(err)
+    }
+
+
+
+  }
+
   return <>
     <Box height={"100%"} textAlign={"center"} flex={selectedChat ? 8 : 12}
     >
@@ -184,32 +246,28 @@ export default function Singlechat({ fetchAgain, setFetchAgain }) {
           alignItems={"center"}
           p={4}
         >
+          <Box justifyContent={"space-between"} width={"150px"} d={"flex"}>
 
-          <IconButton onClick={() => setSelectedChat(null)}
-            icon={<ArrowBackIcon />} />
+            <IconButton borderRadius={"3px"} padding={"0 8px"} bg={"purple.400"} _hover={{ bg: "#ffffff", color: "purple.500", border: "2px solid #8c7ae6" }} size={"md"} color="#ffffff" onClick={() => setSelectedChat(null)}
+              icon={<ArrowBackIcon fontSize={"2xl"} />} />
 
-          <Text fontSize={{ base: "28px", md: "20px" }}
-            fontWeight={700}
-            className="senderName"
+            <Text fontSize={{ base: "28px", md: "20px" }}
+              fontWeight={700}
+              className="senderName"
+              fontSize="1.6em"
+              cursor={"pointer"}
+            >
+              {
+                selectedChat.isGroupChat ? selectedChat.chatName : getSender(user, selectedChat.users)
+              }
 
-            p={4}
-          >
-            {
-              selectedChat.isGroupChat ? selectedChat.chatName : getSender(user, selectedChat.users)
-            }
-
-
-
-
-            <IconButton d={{ base: "flex", md: "none" }}
-              icon={<ArrowBackIcon />} />
-
-
-          </Text>
+            </Text>
+          </Box>
           {
             !selectedChat.isGroupChat ?
               <ProfileModel user={getSenderFull(user, selectedChat?.users)} >
                 <Image
+                  display={{ base: "none", md: "block" }}
                   src={senderFullInfo?.pic}
                   borderRadius={"full"}
                   w="50px"
@@ -221,6 +279,13 @@ export default function Singlechat({ fetchAgain, setFetchAgain }) {
               </>
           }
 
+          <Box display={{ md: "none" }}>
+
+            <MoreVert style={{ fontSize: "2.5em" }} cursor="pointer" onClick={onOpen} />
+
+          </Box>
+
+
         </Box>
 
 
@@ -229,7 +294,7 @@ export default function Singlechat({ fetchAgain, setFetchAgain }) {
           w={"100%"}
           bg={"white"}
           p={4}
-          height={"70%"}
+          height={"77%"}
           maxH={"77%"}
           flexDir={"column"}
           d={"flex"}
@@ -238,8 +303,6 @@ export default function Singlechat({ fetchAgain, setFetchAgain }) {
           overflowY="scroll"
         >
           <Box className='senderInfo' >
-            hey
-
 
             <Image
               src={senderFullInfo?.pic}
@@ -264,13 +327,50 @@ export default function Singlechat({ fetchAgain, setFetchAgain }) {
         </Box>
         {
           !loading && <FormControl position={"relative"} onKeyDown={sendMessage} isRequired mt={3} >
-        
+
             <Input value={newMessages} borderRadius={"0"} opacity={"0.8"} variant={"filled"} border="none" borderBottom={"2px solid gray"} bg="E0E0E0" placeholder='Enter a message' onChange={(e) => typingHandler(e)} />
 
           </FormControl>
         }
       </>
         : <ProfileBox setFetchAgain={setFetchAgain} fetchAgain={fetchAgain} />}
+      <>
+
+        <Drawer placement='right' onClose={onClose} isOpen={isOpen} >
+
+          <DrawerOverlay />
+          <DrawerContent>
+            <DrawerHeader className='searchText'>
+            </DrawerHeader>
+            <DrawerBody>
+              <Box  >
+                <Box d="flex" justifyContent={"center"} alignItems={"center"} flexDir={"column"} padding="4px">
+                  <Box d="flex" alignItems={"center"} justifyContent={"center"} borderRadius={'full'} width={"150px"} height={"150px"} marginY={"10px"}>
+                    <Image objectFit={"cover"} borderRadius={"full"} width={"150px"} height={"150px"} className='s_userInfoImg' src={selectedUserObj.pic} />
+                  </Box>
+                  <Box marginY={"1"} d={"flex"} flexDirection="column" justifyContent={"center"} width="100%">
+                    <Box padding={"10px"} d="flex" w={"100%"} flexDir={"column"} alignItems="flex-start">
+                      <h3 className='s_chatInfoName'>{selectedUserObj?.userName}</h3>
+                      <div className=" s_chatInfoList">
+                        <strong className='s_chatInfoTitle'>Followings:</strong>
+                        <span className='s_chatInfoItem'>{selectedUserObj.followings?.length}</span>
+                      </div>
+                      <div className="s_chatInfoList">
+                        <strong className='s_chatInfoTitle'>Followers:</strong>
+                        <span className='s_chatInfoItem'>{selectedUserObj.followers?.length + followed ? 1 : 0}</span>
+                      </div>
+
+                    </Box>
+                  </Box>
+                  <button className={followed ? "followed" : 'followUser'} onClick={() => handleFollow(selectedUserId)} >{followed ? <>Firends <Check style={{ margin: "0 3px", marginBottom: "3px" }} /></> : "Follow"}</button>
+                </Box>
+              </Box >
+            </DrawerBody>
+          </DrawerContent>
+
+
+        </Drawer>
+      </>
     </Box>
   </>;
 }

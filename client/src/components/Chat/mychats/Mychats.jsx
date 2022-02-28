@@ -6,7 +6,7 @@ import GroupChatModal from '../../groupchatModal/GroupChatModal';
 import ChatMemebers from '../ChatMembers/ChatMemebers';
 
 
-export default function Mychats({ fetchAgain ,setFetchAgain}) {
+export default function Mychats({ fetchAgain, setFetchAgain }) {
 
   const { user: currUser, selectedChat, setSelectedChat, setChats, chats } = ChatState();
 
@@ -17,8 +17,11 @@ export default function Mychats({ fetchAgain ,setFetchAgain}) {
 
   const fetchChats = async () => {
 
-    if (currUser) {
+    let deletedChats = currUser?.deletedChat;
 
+    // console.log(deletedChats[0]?.deletedAt, deletedChats[1]?.deletedAt)
+
+    if (currUser) {
       const config = {
         headers: {
           Authorization: `Bearer ${currUser?.token}`
@@ -26,7 +29,28 @@ export default function Mychats({ fetchAgain ,setFetchAgain}) {
       }
       try {
         const { data } = await axios.get("http://localhost:8000/api/chat", config)
-        setChats(data)
+
+        if (deletedChats?.length >= 1) {
+          const filtered = data.filter((item) => {
+            return deletedChats.every((del) => {
+              if (del.chatId !== item._id) {
+                return true;
+              } else if (del.chatId === item._id) {
+                if (del.deletedAt < new Date(item.latestMessage?.createdAt).getTime()) {
+                  return true;
+                }
+              } else {
+                return false;
+              }
+            });
+          });
+          setChats(filtered)
+        } else {
+
+          setChats(data)
+        }
+
+
       } catch (err) {
         toast({
           title: 'Cannot find Chat.',
@@ -36,11 +60,9 @@ export default function Mychats({ fetchAgain ,setFetchAgain}) {
           isClosable: true,
         })
         console.log(err)
-
       }
     }
   }
-
 
   useEffect(() => {
     fetchChats();
@@ -55,7 +77,7 @@ export default function Mychats({ fetchAgain ,setFetchAgain}) {
     flexDir={"column"}
     alignItems={"center"}
     p={"3"}
-    width={{ base: "100%", md: selectedChat ? "10%" : "45%" }}
+    width={{  md: selectedChat ? "10%" : "45%" }}
     position={"sticky"}
     top={"16"}
     maxHeight={"100%"}
@@ -93,7 +115,7 @@ export default function Mychats({ fetchAgain ,setFetchAgain}) {
       {
         chats ?
           chats?.map((chat) => (
-            <ChatMemebers setFetchAgain={setFetchAgain} fetchAgain={fetchAgain} key={chat._id} chat={chat} setSelectedChat={setSelectedChat} />
+            <ChatMemebers setChats={setChats} setFetchAgain={setFetchAgain} fetchAgain={fetchAgain} key={chat._id} chat={chat} setSelectedChat={setSelectedChat} />
           ))
           : <div>No chats</div>
       }
