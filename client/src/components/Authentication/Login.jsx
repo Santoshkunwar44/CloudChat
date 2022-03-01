@@ -3,6 +3,8 @@ import React, { useRef, useState } from 'react';
 import "./Authentication.css"
 import axios from 'axios';
 import { useNavigate } from "react-router-dom"
+import { GoogleLogin } from 'react-google-login';
+import { GitHub } from "@material-ui/icons"
 export default function Login() {
     const [show, setShow] = useState(false)
     const [loading, setLoading] = useState(false)
@@ -42,10 +44,40 @@ export default function Login() {
             setLoading(false)
         }
     }
+
+
+
     const handleGoogleLogin = () => {
         window.open("http://localhost:8000/auth/google", "_self");
     }
 
+
+
+
+
+    const responseGoogleSuccess = async (response) => {
+
+        let LogUser = {
+            tokenId: response.tokenId,
+        }
+        const loguser = await axios.post("http://localhost:8000/auth/googleLogin", LogUser);
+        console.log("success ", loguser)
+        if (loguser.data) {
+            localStorage.setItem("userInfo", JSON.stringify(loguser.data))
+            navigate("/chatpage");
+        }
+    }
+
+
+
+
+    const responseGoogleFailure = (response) => {
+        console.log("failure  ", response)
+    }
+
+    const handleGithubLogin = () => {
+        window.open("http://localhost:8000/auth/github", "_self");
+    }
     return <VStack spacing={"5px"} >
         <FormControl className='loginItem' >
             <FormLabel htmlFor='email'>Email </FormLabel>
@@ -64,22 +96,38 @@ export default function Login() {
         </FormControl>
 
 
-        <Box marginY={"20px"} className="loginSocialMedia">
-            <Box _hover={{ bg: "gray" }} onClick={handleGoogleLogin} borderRadius="full" padding={"8px 12px"} d="flex" alignItems={"center"} className="registerLoginBox">
-                <img className='registerLoginIcon' src="https://img.icons8.com/color/48/000000/google-logo.png" />
-                <Text letterSpacing={"2px"} marginLeft={"8px"} fontWeight="600" fontSize="22px" className='socialMediaText'>Google</Text>
-            </Box>
+        <Box marginY={"40px"} width={"100%"} justifyContent={"space-evenly"} d={"flex"} className="loginSocialMedia">
+
             {/* <Box className="registerLoginBox">
                 <img className='registerLoginIcon' src="icons/twitter.png" alt="twitter" />
                 <span className='socialMediaText'>Twitter</span>
-            </Box>
-            <Box className="registerLoginBox">
-                <img className='registerLoginIcon' src="icons/github.png" alt="twitter" />
-                <span className='socialMediaText'>Github</span>
             </Box> */}
+
+
+            <Box  borderRadius={"3px"}  padding={"5px 10px"} border={"2px solid #9c88ff"} _hover={{ bg: "gray" }} cursor={"pointer"} d={"flex"} alignItems={"center"} onClick={handleGithubLogin} className="registerLoginBox">
+                <GitHub style={{ fontSize: "35px", marginRight: "12px" }} />
+                <span className='socialMediaText'>Login with Github</span>
+            </Box>
+
+
+
+            <Box border={"2px solid #9c88ff"} borderRadius={"3px"} padding={"5px 10px"} _hover={{ bg: "gray" }} d="flex" alignItems={"center"}>
+                <Box>
+
+                    <img style={{ width: "40px", marginRight: "12px" }} src="https://img.icons8.com/color/48/000000/google-logo.png" />
+                </Box>
+
+                <GoogleLogin
+                    clientId="573239136179-lmf02gf518d0ln93cj3up4vm6mrn8e4p.apps.googleusercontent.com"
+                    render={renderProps => (
+                        <button onClick={renderProps.onClick} disabled={renderProps.disabled}>Login with google </button>
+                    )}
+                    onSuccess={responseGoogleSuccess}
+                    onFailure={responseGoogleFailure}
+                    cookiePolicy={'single_host_origin'}
+                />
+            </Box>
         </Box>
-
-
-        <Button style={{ marginTop: "30px " }} letterSpacing={"1.3px"} width={"124px"} colorScheme={"yellow"} onClick={handleLogin} isLoading={loading} >Login</Button>
+        <Button style={{ marginTop: "30px" }} letterSpacing={"1.3px"} width={"124px"} colorScheme={"yellow"} onClick={handleLogin} isLoading={loading} >Login</Button>
     </VStack>;
 }

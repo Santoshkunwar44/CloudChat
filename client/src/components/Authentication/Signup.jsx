@@ -87,10 +87,7 @@ export default function Register() {
       </InputGroup>
     </FormControl>
 
-    <FormControl className='loginItem'>
-      <FormLabel htmlFor='file'    >Upload Profile Picture </FormLabel>
-      <Input p={"8px"} id='file' type='file' accept='image/*' onChange={(e) => setFile(e.target.files[0])} />
-    </FormControl>
+
 
     <Button style={{ marginTop: "30px " }} colorScheme={"yellow"} isLoading={loading} onClick={handleSubmit} >SignUp</Button>
   </VStack>;

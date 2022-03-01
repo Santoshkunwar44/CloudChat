@@ -1,38 +1,28 @@
-const User = require("../Models/user");
 const passport = require("passport");
-const GoogleStrategy = require("passport-google-oauth20").Strategy;
+const GitHubStrategy = require("passport-github2").Strategy;
+const bcrypt = require("bcrypt");
+const user = require("../Models/user");
 
-const GOOGLE_CLIENT_ID =
-  "573239136179-lmf02gf518d0ln93cj3up4vm6mrn8e4p.apps.googleusercontent.com";
-const GOOGLE_CLIENT_SECRET = "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";
-
+const GITHUB_CLIENT_ID = "700b6ee240a03d112fe8";
+const GITHUB_CLIENT_SECRET = "6e63f674c646368ffb548571597762cdd57f2a4a";
 passport.use(
-  new GoogleStrategy(
+  new GitHubStrategy(
     {
-      clientID: GOOGLE_CLIENT_ID,
-      clientSecret: GOOGLE_CLIENT_SECRET,
-      callbackURL: "http://localhost:8000/auth/google/callback",
+      clientID: GITHUB_CLIENT_ID,
+      clientSecret: GITHUB_CLIENT_SECRET,
+      scope: ["user:email"],
+      callbackURL: "http://localhost:8000/auth/github/callback",
     },
-    function (accessToken, refreshToken, profile, cb) {
-      console.log(profile);
-      const profileObj = {
-        email: profile.emails[0].value,
-        userName: profile.displayName,
-        pic: profile.photos[0].value,
-        password: "loginedfrom321",
-      };
-      User.create(profileObj, function (err, user) {
-        return cb(err, user);
-      });
+    function (accessToken, refreshToken, profile, done) {
+      done(null, profile);
     }
   )
 );
 
-passport.serializeUser(function (user, done) {
-
+passport.serializeUser((user, done) => {
   done(null, user);
 });
 
-passport.deserializeUser(function (obj, done) {
-  done(null, obj);
+passport.deserializeUser((user, done) => {
+  done(null, user);
 });

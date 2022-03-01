@@ -22,10 +22,11 @@ let io = new Server(server, {
     origin: "http://localhost:3000",
   },
 });
+
+// initializing the middlewares
 dotenv.config();
 connectDb();
 
-// initializing the middlewares
 app.use(
   cookieSession({
     name: "session",
@@ -36,7 +37,13 @@ app.use(
 app.use(passport.initialize());
 app.use(passport.session());
 
-app.use(cors());
+app.use(
+  cors({
+    origin: "http://localhost:3000",
+    methods: "GET,POST,PUT,DELETE",
+    credentials: true,
+  })
+);
 app.use(express.json()); // parses the json received from the frontEnd
 app.use(morgan("common"));
 
