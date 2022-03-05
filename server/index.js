@@ -83,11 +83,11 @@ io.on("connection", (socket) => {
   });
 
   socket.on("typing", (room) => {
-    socket.in(room).emit("typing", room);
+    socket.to(room).emit("typing", room);
   });
 
   socket.on("stop typing", (room) => {
-    socket.in(room).emit("stop typing");
+    socket.to(room).emit("stop typing");
   });
 });
 

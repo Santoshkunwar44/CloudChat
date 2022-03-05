@@ -26,8 +26,29 @@ export default function Sidedrawer() {
     const { user, chats, setSelectedChat, notifications, setnotifications, setChats } = ChatState()
     //--------------LOGOUT FUNCTIONALITY 
 
-    const handleLogout = () => {
+    const handleLogout = async () => {
         localStorage.removeItem("userInfo");
+        fetch("http://localhost:8000/auth/logout", {
+            method: "POST",
+            credentials: "include",
+            headers: {
+                Accept: "application/json",
+                "Content-Type": "application/json",
+                "Access-Control-Allow-Credentials": true,
+            },
+        })
+            .then((response) => {
+                if (response.status === 200) return response.json();
+                throw new Error("authentication has been failed!");
+            })
+            .then((resObject) => {
+                console.log(resObject)
+
+            })
+            .catch((err) => {
+                console.log(err);
+            });
+        localStorage.removeItem("mediaLogged")
         navigate("/")
     }
     //---------------searching the user 
@@ -138,13 +159,13 @@ export default function Sidedrawer() {
                 </Box>
                 <Tooltip label="Search users to chat">
                     <Button padding={"5px 15px"} width={["200px", "300px", "250px", "300px"]} border={"2px solid #8c7ae6"} onClick={onOpen} variant={"ghost"}>
-                        <i style={{ marginLeft: "20px" }} className="fas fa-search" ></i>
+                        <i style={{ marginLeft: "20px" ,color:"gray" }} className="fas fa-search" ></i>
                         <Text fontSize={[
                             "15px",
                             "12px",
                             "14px",
                             "20px"
-                        ]} px={"4"} className=""> Search for new Friends </Text></Button>
+                        ]} px={"4"} letterSpacing="1.1px" color="gray.600"> Search for new Friends </Text></Button>
 
                 </Tooltip>
 
@@ -207,7 +228,7 @@ export default function Sidedrawer() {
 
             <DrawerOverlay />
             <DrawerContent>
-                <DrawerHeader className='searchText'>
+                <DrawerHeader  className='searchText'>
                     Search for Friends
                 </DrawerHeader>
                 <DrawerBody>

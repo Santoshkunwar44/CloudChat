@@ -16,7 +16,7 @@ export default function Chatbox({ fetchAgain, setFetchAgain }) {
 
   >
     <Singlechat fetchAgain={fetchAgain} setFetchAgain={setFetchAgain} />
-    <SingleUserInfo />
+    <SingleUserInfo fetchAgain={fetchAgain} setFetchAgain={setFetchAgain} />
 
 
   </Box>

@@ -12,6 +12,9 @@ import { ChatState } from '../../../context/Chatprovider';
 import { ProfileBox } from "../../profileBox/ProfileBox"
 import { useDisclosure } from "@chakra-ui/react"
 import { Check, MoreVert } from '@material-ui/icons';
+import Lottie, { } from "react-lottie"
+
+import TypingAnimation from "../../animation/86723-typing-animation.json"
 export default function Singlechat({ fetchAgain, setFetchAgain }) {
 
   const socket = useRef();
@@ -21,9 +24,11 @@ export default function Singlechat({ fetchAgain, setFetchAgain }) {
   const [loading, setLoading] = useState(false)
   const [typing, setTyping] = useState(false)
   const [socketconnected, setSocketConnected] = useState(false)
+  const [nextUserTyping, setNextUserTyping] = useState(false)
   const [senderFullInfo, setSenderFullInfo] = useState([])
   const toast = useToast();
   const { isOpen, onOpen, onClose } = useDisclosure()
+
 
   useEffect(() => {
     socket.current = io("ws://localhost:8000");
@@ -33,6 +38,28 @@ export default function Singlechat({ fetchAgain, setFetchAgain }) {
     })
   }, [user])
 
+
+  useEffect(() => {
+
+    socket.current.on("typing", (room) => {
+      console.log(room, selectedChat?._id)
+      if (selectedChat?._id !== room) return;
+      setNextUserTyping(true)
+      console.log("is typing", room)
+    })
+
+  })
+
+  useEffect(() => {
+    socket.current.on("stop typing", (room) => {
+      setNextUserTyping(false)
+      // console.log("typing stopped")
+    })
+
+  })
+
+
+  console.log("user typing state ", nextUserTyping)
 
   const fetchMessage = async () => {
 
@@ -96,11 +123,9 @@ export default function Singlechat({ fetchAgain, setFetchAgain }) {
         }, config);
 
 
-
-
         setMessages([...messages, data])
         socket.current.emit("new Message", data)
-
+        setNextUserTyping(false)
       } catch (err) {
         console.log(err)
         toast({
@@ -110,7 +135,7 @@ export default function Singlechat({ fetchAgain, setFetchAgain }) {
           position: "top-left",
           isClosable: true,
         })
-
+        setNextUserTyping(false)
       }
     }
   }
@@ -134,26 +159,39 @@ export default function Singlechat({ fetchAgain, setFetchAgain }) {
   })
 
 
+  useEffect(() => {
+    socket.current.on("message received", (data) => {
+      if (selectedChat && selectedChat._id === data.chat._id) {
+        setMessages([...messages, data])
+      } else {
+        if (notifications.includes(data)) return;
+        setnotifications([data, ...notifications])
+        setFetchAgain(!fetchAgain)
+      }
+    })
+  })
+
+
 
 
   const typingHandler = (e) => {
     setnewMessages(e.target.value);
-
     if (!socketconnected) return;
-
     if (!typing) {
       setTyping(true);
       socket.current.emit("typing", selectedChat._id);
     }
     let lastTypingTime = new Date().getTime();
     var timerLength = 3000;
+
+
     setTimeout(() => {
       var timeNow = new Date().getTime();
       var timeDiff = timeNow - lastTypingTime;
       if (timeDiff >= timerLength && typing) {
         socket.current.emit("stop typing", selectedChat._id);
-        setTyping(false);
       }
+      setTyping(false);
     }, timerLength);
   };
 
@@ -175,7 +213,6 @@ export default function Singlechat({ fetchAgain, setFetchAgain }) {
 
 
   useEffect(() => {
-
     if (user && selectedChat) {
       setSelectedUser(getSenderId(user, selectedChat?.users));
       setSelectedUserObj(getSenderFull(user, selectedChat?.users))
@@ -233,6 +270,14 @@ export default function Singlechat({ fetchAgain, setFetchAgain }) {
 
 
   }
+  const defaultOptions = {
+    loop: true,
+    autoplay: true,
+    animationData: TypingAnimation,
+    rendererSettings: {
+      preserveAspectRatio: 'xMidYMid slice'
+    }
+  };
 
   return <>
     <Box height={"100%"} textAlign={"center"} flex={selectedChat ? 8 : 12}
@@ -246,19 +291,19 @@ export default function Singlechat({ fetchAgain, setFetchAgain }) {
           alignItems={"center"}
           p={4}
         >
-          <Box justifyContent={"space-between"} width={"150px"} d={"flex"}>
+          <Box justifyContent={"space-between"} alignItems="center" width={"150px"} d={"flex"}>
 
-            <IconButton borderRadius={"3px"} padding={"0 8px"} bg={"purple.400"} _hover={{ bg: "#ffffff", color: "purple.500", border: "2px solid #8c7ae6" }} size={"md"} color="#ffffff" onClick={() => setSelectedChat(null)}
+            <IconButton marginRight={"14px"} borderRadius={"3px"} padding={"0 8px"} bg={"purple.400"} _hover={{ bg: "#ffffff", color: "purple.500", border: "2px solid #8c7ae6" }} size={"md"} color="#ffffff" onClick={() => setSelectedChat(null)}
               icon={<ArrowBackIcon fontSize={"2xl"} />} />
 
             <Text fontSize={{ base: "28px", md: "20px" }}
               fontWeight={700}
-              className="senderName"
-              fontSize="1.6em"
+
               cursor={"pointer"}
+              className="senderName"
             >
               {
-                selectedChat.isGroupChat ? selectedChat.chatName : getSender(user, selectedChat.users)
+                selectedChat?.isGroupChat ? selectedChat.chatName : getSender(user, selectedChat.users)
               }
 
             </Text>
@@ -294,13 +339,12 @@ export default function Singlechat({ fetchAgain, setFetchAgain }) {
           w={"100%"}
           bg={"white"}
           p={4}
-          height={"77%"}
+          height={"76%"}
           maxH={"77%"}
           flexDir={"column"}
           d={"flex"}
           alignItems={"center"}
           borderRadius={"lg"}
-          overflowY="scroll"
         >
           <Box className='senderInfo' >
 
@@ -311,8 +355,8 @@ export default function Singlechat({ fetchAgain, setFetchAgain }) {
               height={"150px"}
               objectFit={"cover"}
             />
-            {/* <p className='senderInfoName'>{senderFullInfo?.userName}</p> */}
           </Box>
+
           {
             loading ? <Spinner size="xl" height={20} width={20} margin="auto " alignSelf={"center"} /> : <>
               <div className='messageBox' style={{ width: "100%", display: "flex", flexDirection: "column" }}>
@@ -322,13 +366,30 @@ export default function Singlechat({ fetchAgain, setFetchAgain }) {
                     <p className='startConversationText'>    {selectedChat.isGroupChat ? `START CONVERSATION IN ${selectedChat.chatName}` : ` START CONVERSATION WITH ${getSender(user, selectedChat.users)}`} </p>
                   </Box> : <ScrollabeChat messages={messages} />
                 }
+
+                <Box>
+
+                </Box>
+
+
               </div>
             </>}
+
         </Box>
+
+
+        <Box position={"relative"} float="left" justifySelf={"start"}  >
+          {nextUserTyping ? <Lottie
+            options={defaultOptions}
+            width={40}
+          /> : "not typing"}
+        </Box>
+
+
         {
           !loading && <FormControl position={"relative"} onKeyDown={sendMessage} isRequired mt={3} >
 
-            <Input value={newMessages} borderRadius={"0"} opacity={"0.8"} variant={"filled"} border="none" borderBottom={"2px solid gray"} bg="E0E0E0" placeholder='Enter a message' onChange={(e) => typingHandler(e)} />
+            <Input wordBreak={"break-word"} value={newMessages} borderRadius={"0"} opacity={"0.8"} variant={"filled"} border="none" letterSpacing={"1.5px"} borderBottom={"2px solid #34495e"} bg="E0E0E0" placeholder='Enter a message' onChange={(e) => typingHandler(e)} />
 
           </FormControl>
         }
@@ -343,21 +404,21 @@ export default function Singlechat({ fetchAgain, setFetchAgain }) {
             <DrawerHeader className='searchText'>
             </DrawerHeader>
             <DrawerBody>
-              <Box  >
+              <Box>
                 <Box d="flex" justifyContent={"center"} alignItems={"center"} flexDir={"column"} padding="4px">
                   <Box d="flex" alignItems={"center"} justifyContent={"center"} borderRadius={'full'} width={"150px"} height={"150px"} marginY={"10px"}>
-                    <Image objectFit={"cover"} borderRadius={"full"} width={"150px"} height={"150px"} className='s_userInfoImg' src={selectedUserObj.pic} />
+                    <Image objectFit={"cover"} borderRadius={"full"} width={"150px"} height={"150px"} className='s_userInfoImg' src={selectedUserObj?.pic} />
                   </Box>
                   <Box marginY={"1"} d={"flex"} flexDirection="column" justifyContent={"center"} width="100%">
                     <Box padding={"10px"} d="flex" w={"100%"} flexDir={"column"} alignItems="flex-start">
                       <h3 className='s_chatInfoName'>{selectedUserObj?.userName}</h3>
                       <div className=" s_chatInfoList">
                         <strong className='s_chatInfoTitle'>Followings:</strong>
-                        <span className='s_chatInfoItem'>{selectedUserObj.followings?.length}</span>
+                        <span className='s_chatInfoItem'>{selectedUserObj?.followings?.length}</span>
                       </div>
                       <div className="s_chatInfoList">
                         <strong className='s_chatInfoTitle'>Followers:</strong>
-                        <span className='s_chatInfoItem'>{selectedUserObj.followers?.length + followed ? 1 : 0}</span>
+                        <span className='s_chatInfoItem'>{selectedUserObj?.followers?.length + followed ? 1 : 0}</span>
                       </div>
 
                     </Box>
@@ -367,8 +428,6 @@ export default function Singlechat({ fetchAgain, setFetchAgain }) {
               </Box >
             </DrawerBody>
           </DrawerContent>
-
-
         </Drawer>
       </>
     </Box>

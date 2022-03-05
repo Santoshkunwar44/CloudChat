@@ -1,5 +1,4 @@
 const router = require("express").Router();
-const passport = require("passport");
 const { OAuth2Client } = require("google-auth-library");
 const User = require("../Models/user");
 const generateToken = require("../config/generateToken");
@@ -50,81 +49,91 @@ router.post("/googleLogin", async (req, res) => {
   }
 });
 
-router.get(
-  "/github",
-  passport.authenticate("github", { scope: ["user:email"] })
-);
+// router.get(
+//   "/github",
+//   passport.authenticate("github", { scope: ["user:email"] })
+// );
 
-router.get(
-  "/github/callback",
-  passport.authenticate("github", { failureRedirect: "/login" }),
-  function (req, res) {
-    // Successful authentication, redirect home.
-    // res.send(req.user);
-    res.redirect("http://localhost:3000/successLogin");
-  }
-);
-router.get("/login/github/success", async (req, res) => {
-  try {
-    if (req.user) {
-      let loggedUser = req.user;
-      let gotUser;
+// router.get(
+//   "/github/callback",
+//   passport.authenticate("github", { failureRedirect: "/login" }),
+//   function (req, res) {
+//     // Successful authentication, redirect home.
+//     res.cookie("mediaLogged", true);
+//     res.redirect("http://localhost:3000/chatpage");
+//   }
+// );
 
-      let useremail = loggedUser.emails[0]?.value;
-      let customEmail = loggedUser.username + "@gmail.com";
+// router.post("/logout", (req, res) => {
+//   if (req.user) {
+//     req.logout();
+//     res.send("hey");
+//     res.cookie.
+//   } else {
+//     throw new Error("failed");
+//   }
+// });
 
-      let user = await User.findOne({
-        $or: [{ email: useremail }, { email: customEmail }],
-      });
+// router.get("/login/github/success", async (req, res) => {
+//   try {
+//     if (req.user) {
+//       let loggedUser = req.user;
+//       let gotUser;
 
-      if (!user) {
-        //generating a hashed password
-        let setEmail;
-        const salt = await bcrypt.genSalt(10);
-        const hashedPassword = await bcrypt.hash(
-          useremail + loggedUser.username,
-          salt
-        );
+//       let useremail = loggedUser.emails[0]?.value;
+//       let customEmail = loggedUser.username + "@gmail.com";
 
-        if (useremail) {
-          setEmail = useremail;
-        } else {
-          setEmail = customEmail;
-        }
+//       let user = await User.findOne({
+//         $or: [{ email: useremail }, { email: customEmail }],
+//       });
 
-        let newUser = {
-          userName: loggedUser.username,
-          pic: loggedUser.photos[0].value,
-          email: setEmail,
-          password: hashedPassword,
-        };
+//       if (!user) {
+//         //generating a hashed password
+//         let setEmail;
+//         const salt = await bcrypt.genSalt(10);
+//         const hashedPassword = await bcrypt.hash(
+//           useremail + loggedUser.username,
+//           salt
+//         );
 
-        gotUser = await User.create(newUser);
-        const { password, ...others } = gotUser._doc;
-        others.token = generateToken(others._id);
-        console.log(others);
-        res.status(200).send({
-          success: true,
-          message: "successfull",
-          user: others,
-        });
-      } else {
-        const { password, ...others } = user._doc;
-        others.token = generateToken(others._id);
-        console.log(others);
-        res.status(200).send({
-          success: true,
-          message: "successfull",
-          user: others,
-        });
-      }
-    } else {
-      res.status(500).send("server error");
-    }
-  } catch (err) {
-    console.log(err);
-  }
+//         if (useremail) {
+//           setEmail = useremail;
+//         } else {
+//           setEmail = customEmail;
+//         }
 
-  // if user
-});
+//         let newUser = {
+//           userName: loggedUser.username,
+//           pic: loggedUser.photos[0].value,
+//           email: setEmail,
+//           password: hashedPassword,
+//         };
+
+//         gotUser = await User.create(newUser);
+//         const { password, ...others } = gotUser._doc;
+//         others.token = generateToken(others._id);
+//         console.log(others);
+//         res.status(200).send({
+//           success: true,
+//           message: "successfull",
+//           user: others,
+//         });
+//       } else {
+//         const { password, ...others } = user._doc;
+//         others.token = generateToken(others._id);
+//         res.status(200).send({
+//           success: true,
+//           message: "successfull",
+//           user: others,
+//         });
+//       }
+//     } else {
+//       res.status(500).send("server error");
+//     }
+//   } catch (err) {
+//     console.log(err);
+//   }
+// if user
+// });
+
 module.exports = router;

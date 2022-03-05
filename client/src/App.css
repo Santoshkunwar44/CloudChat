@@ -83,7 +83,6 @@
   width: 125px;
   margin: 20px 0;
 }
-
 .getChatText {
   font-size: 1em;
   letter-spacing: 1.7px;
@@ -93,18 +92,18 @@
 
 .startchatImg {
   width: 200px;
-  margin: 5px;
+  margin: 10px;
 }
 
 .startConversationBox {
   display: flex;
   align-items: center;
   flex-direction: column;
-  margin-top: 7em;
+  margin-top: 2em;
 }
 
 .startConversationText {
-  font-size: 1em;
+  font-size: 0.8em;
   letter-spacing: 2px;
   font-weight: 600;
 }

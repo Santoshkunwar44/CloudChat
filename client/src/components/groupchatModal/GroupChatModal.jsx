@@ -14,11 +14,13 @@ import {
     Input,
     Box,
     Spinner,
+    Text,
 } from '@chakra-ui/react'
 import { ChatState } from '../../context/Chatprovider';
 import UserListItem from "../userListItem/UserListItem"
 import axios from 'axios';
 import UserBatch from '../userbatch/UserBatch';
+import { Group } from '@material-ui/icons';
 export default function GroupChatModal({ children }) {
 
 
@@ -156,20 +158,16 @@ export default function GroupChatModal({ children }) {
             <Modal isOpen={isOpen} onClose={() => { setSelectedUsers([]); setSearchResults([]); onClose() }}>
                 <ModalOverlay />
                 <ModalContent>
-                    <ModalHeader fontSize={"25px"} d={"flex"} justifyContent={"center"}>Create Group</ModalHeader>
+                    <ModalHeader fontSize={"25px"} d={"flex"} alignItems={"center"} justifyContent={"center"}> <Group style={{ fontSize: "52px",color:"#a55eea",marginRight:"10px" }} /> <Text fontSize={"20px"}>Create Groupchat</Text></ModalHeader>
                     <ModalCloseButton />
                     <ModalBody d={"flex"} alignItems={"center"} flexDir={"column"} >
                         <FormControl onChange={(e) => setGroupChat(e.target.value)} mb={4}>
-                            <Input padding={"8px"} fontSize={"18px"} placeholder='Group Name ' />
-
+                            <Input letterSpacing={"1.3px"} borderRadius={"2px"} padding={"8px"} fontSize={"16px"} placeholder='Group Name ' />
                         </FormControl>
                         <FormControl mb={4}>
-                            <Input padding={"8px"} onChange={(e) => handleSearch(e.target.value)} fontSize={"18px"} placeholder='Search user' />
-
+                            <Input letterSpacing={"1.3px"} borderRadius={"2px"} padding={"8px"} onChange={(e) => handleSearch(e.target.value)} fontSize={"16px"} placeholder='Search user' />
                         </FormControl>
                         <Box d={"flex"} flexWrap={"wrap"} justifyContent={"space-around"} alignItems={"center"}>
-
-
                             {
                                 selectedUsers.map((e) => {
                                     return <UserBatch key={e._id} user={e} handleClear={() => handleClear(e)} />

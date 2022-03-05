@@ -4,8 +4,8 @@ import "./Authentication.css"
 import axios from 'axios';
 import { useNavigate } from "react-router-dom"
 import { GoogleLogin } from 'react-google-login';
-import { GitHub } from "@material-ui/icons"
-export default function Login() {
+import { Visibility, VisibilityOff } from '@material-ui/icons';
+export default function Login({ responseGoogleFailure, responseGoogleSuccess }) {
     const [show, setShow] = useState(false)
     const [loading, setLoading] = useState(false)
     const emailRef = useRef();
@@ -46,72 +46,18 @@ export default function Login() {
     }
 
 
+    // const handleGithubLogin = () => {
+    //     window.open("http://localhost:8000/auth/github", "_self");
+    //     localStorage.setItem("mediaLogged", JSON.stringify(true))
+    // }
+    return <VStack width={"100%"} spacing={"5px"}   >
 
-    const handleGoogleLogin = () => {
-        window.open("http://localhost:8000/auth/google", "_self");
-    }
-
-
-
-
-
-    const responseGoogleSuccess = async (response) => {
-
-        let LogUser = {
-            tokenId: response.tokenId,
-        }
-        const loguser = await axios.post("http://localhost:8000/auth/googleLogin", LogUser);
-        console.log("success ", loguser)
-        if (loguser.data) {
-            localStorage.setItem("userInfo", JSON.stringify(loguser.data))
-            navigate("/chatpage");
-        }
-    }
-
-
-
-
-    const responseGoogleFailure = (response) => {
-        console.log("failure  ", response)
-    }
-
-    const handleGithubLogin = () => {
-        window.open("http://localhost:8000/auth/github", "_self");
-    }
-    return <VStack spacing={"5px"} >
-        <FormControl className='loginItem' >
-            <FormLabel htmlFor='email'>Email </FormLabel>
-            <Input id='email' type='email' ref={emailRef} />
-        </FormControl>
-        <FormControl className='loginItem'>
-            <FormLabel htmlFor='password'>password</FormLabel>
-            <InputGroup>
-                <Input id='password' type={!show ? 'password' : "text"} ref={passwordRef} />
-                <InputRightElement>
-                    <Button h={"1.7rem"} size={"sm"} onClick={() => setShow(!show)}>
-                        {show ? "hide " : "show"}
-                    </Button>
-                </InputRightElement>
-            </InputGroup>
-        </FormControl>
-
-
-        <Box marginY={"40px"} width={"100%"} justifyContent={"space-evenly"} d={"flex"} className="loginSocialMedia">
-
-            {/* <Box className="registerLoginBox">
-                <img className='registerLoginIcon' src="icons/twitter.png" alt="twitter" />
-                <span className='socialMediaText'>Twitter</span>
-            </Box> */}
-
-
-            <Box  borderRadius={"3px"}  padding={"5px 10px"} border={"2px solid #9c88ff"} _hover={{ bg: "gray" }} cursor={"pointer"} d={"flex"} alignItems={"center"} onClick={handleGithubLogin} className="registerLoginBox">
+        <Box width={"100%"} marginTop={"20px"} width={"100%"} justifyContent={"space-evenly"} d={"flex"} className="loginSocialMedia">
+            {/* <Box borderRadius={"3px"} padding={"5px 10px"} border={"2px solid #dfe6e9"} _hover={{ bg: "#dfe6e9" }} cursor={"pointer"} d={"flex"} alignItems={"center"} onClick={handleGithubLogin} className="registerLoginBox" >
                 <GitHub style={{ fontSize: "35px", marginRight: "12px" }} />
                 <span className='socialMediaText'>Login with Github</span>
-            </Box>
-
-
-
-            <Box border={"2px solid #9c88ff"} borderRadius={"3px"} padding={"5px 10px"} _hover={{ bg: "gray" }} d="flex" alignItems={"center"}>
+            </Box> */}
+            <Box width={"100%"} border={"2px solid #dfe6e9"} borderRadius={"3px"} padding={"5px 10px"} _hover={{ bg: "#dfe6e9" }} d="flex" alignItems={"center"}>
                 <Box>
 
                     <img style={{ width: "40px", marginRight: "12px" }} src="https://img.icons8.com/color/48/000000/google-logo.png" />
@@ -120,7 +66,7 @@ export default function Login() {
                 <GoogleLogin
                     clientId="573239136179-lmf02gf518d0ln93cj3up4vm6mrn8e4p.apps.googleusercontent.com"
                     render={renderProps => (
-                        <button onClick={renderProps.onClick} disabled={renderProps.disabled}>Login with google </button>
+                        <button style={{ width: "100%", textAlign: "start", letterSpacing: "1.5px", margin: "0 8px ", fontWeight: "600" }} onClick={renderProps.onClick} disabled={renderProps.disabled}>Login with google </button>
                     )}
                     onSuccess={responseGoogleSuccess}
                     onFailure={responseGoogleFailure}
@@ -128,6 +74,24 @@ export default function Login() {
                 />
             </Box>
         </Box>
-        <Button style={{ marginTop: "30px" }} letterSpacing={"1.3px"} width={"124px"} colorScheme={"yellow"} onClick={handleLogin} isLoading={loading} >Login</Button>
+        <Box marginY={"5px"} fontSize={"2xl"}>
+            OR
+        </Box>
+        <FormControl className='loginItem' margin={"10px 0 "} >
+            <Input marginY={"4px"} borderRadius={"2px"} fontSize="15px" letterSpacing={"1.4px"} placeholder="Email" id='email' type='email' ref={emailRef} />
+        </FormControl>
+        <FormControl className='loginItem'>
+            <InputGroup>
+                <Input marginY={"4px"} borderRadius={"2px"} fontSize="15px" placeholder="password" letterSpacing={"1.8px"} id='password' type={!show ? 'password' : "text"} ref={passwordRef} />
+                <InputRightElement>
+                    <Button h={"1.7rem"} size={"sm"} onClick=
+                        {() => setShow(!show)}>
+                        {show ? <VisibilityOff /> : <Visibility />}
+                    </Button>
+                </InputRightElement>
+            </InputGroup>
+        </FormControl>
+        <Button style={{ marginTop: "30px" }} letterSpacing={"1.8px"} width={"100px"} colorScheme={"purple"} borderRadius="2px" onClick={handleLogin} isLoading={loading} >Login</Button>
+
     </VStack>;
 }

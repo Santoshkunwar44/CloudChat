@@ -109,7 +109,6 @@ export default function ChatMemebers({ chat, setFetchAgain, fetchAgain, setChats
             })
         }
     }
-
     return <Box
         onClick={() => { !option && setSelectedChat(chat) }}
         cursor={"pointer"}
@@ -134,15 +133,17 @@ export default function ChatMemebers({ chat, setFetchAgain, fetchAgain, setChats
 
     >
         {
-            nextUser?.pic ? <Image objectFit={"cover"} className={selectedChat?._id === chat._id ? "selectedChat" : "chatMemberAvatar"} src={nextUser?.pic || "https://bit.ly/dan-abramov"} width={selectedChat ? "50px " : "55px"} height={selectedChat ? "50px" : "55px"} mr={3} size={"md"} borderRadius={"full"} alt='Dan Abramov' /> : <Avatar mr={3} size={"md"} name={chat && getSender(currUser, chat?.users)} className={selectedChat?._id === chat._id ? "selectedChat" : "chatMemberAvatar"} />
+            nextUser?.pic ? <Image objectFit={"cover"} className={selectedChat?._id === chat._id ? "selectedChat" : "chatMemberAvatar"} src={nextUser?.pic || "https://bit.ly/dan-abramov"} width={selectedChat ? "50px " : "55px"} height={selectedChat ? "50px" : "55px"} size={"md"} borderRadius={"full"} alt='Dan Abramov' marginRight={!selectedChat && "8px"} /> : <Avatar mr={3} size={"md"}
+                marginRight={!selectedChat && "7px"}
+                name={chat && getSender(currUser, chat?.users)} className={selectedChat?._id === chat._id ? "selectedChat" : "chatMemberAvatar"} />
 
         }
 
         <Box display={selectedChat ? "none" : "block"}>
-            <Text width={"100%"} fontWeight="bold" letterSpacing={"1.3px"} fontSize={"17px"}>
+            <Text width={"100%"} fontWeight="bold" letterSpacing={"1.3px"} fontSize={"15px"}>
                 {chat && !chat.isGroupChat ? getSender(currUser, chat?.users) : chat.chatName}
             </Text>
-            <Text className='latestMessage' letterSpacing={"1.2px"} color={"#353b48"} fontWeight={600} fontSize={"12px"}  >{chat.latestMessage?.content}</Text>
+            <Text className='latestMessage' letterSpacing={"1.2px"} color={"#353b48"} fontWeight={600} fontSize={"11px"}  >{chat.latestMessage?.content}</Text>
             {showOptions && <>
                 <Popover  >
                     <PopoverTrigger>

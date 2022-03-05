@@ -24,7 +24,7 @@ export const SuccessLogin = () => {
                 setUser(resObject.user);
 
                 localStorage.setItem("userInfo", JSON.stringify(resObject.user))
-                // navigate("/chatpage")
+                navigate("/chatpage")
             })
             .catch((err) => {
                 console.log(err);
