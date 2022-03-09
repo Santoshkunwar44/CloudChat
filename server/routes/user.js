@@ -64,6 +64,7 @@ router.put("/:id", async (req, res) => {
     res.send(saved);
   } catch (err) {}
 });
+
 // get user
 router.get("/", protect, async (req, res) => {
   const keyword = req.query.search
@@ -133,6 +134,17 @@ router.post("/:id/unfollow", protect, async (req, res) => {
   }
 });
 
+router.get("/find/:id", protect, async (req, res) => {
+  try {
+    const user = await User.findById(req.params.id);
+    const { password, ...others } = user._doc;
+    others.token = generateToken(others._id);
+    res.status(200).send(others);
+  } catch (err) {
+    console.log(err);
+    res.status(500).send(err);
+  }
+});
 router.put("/:id", protect, async (req, res) => {
   try {
     const user = User.findOneAndUpdate(

@@ -259,9 +259,6 @@ export default function Singlechat({ fetchAgain, setFetchAgain }) {
         console.log(newuser)
         localStorage.setItem("userInfo", JSON.stringify(newuser))
       }
-
-
-
       setfollowed(!followed)
     } catch (err) {
       console.log(err)
@@ -396,9 +393,7 @@ export default function Singlechat({ fetchAgain, setFetchAgain }) {
       </>
         : <ProfileBox setFetchAgain={setFetchAgain} fetchAgain={fetchAgain} />}
       <>
-
         <Drawer placement='right' onClose={onClose} isOpen={isOpen} >
-
           <DrawerOverlay />
           <DrawerContent>
             <DrawerHeader className='searchText'>
@@ -420,7 +415,6 @@ export default function Singlechat({ fetchAgain, setFetchAgain }) {
                         <strong className='s_chatInfoTitle'>Followers:</strong>
                         <span className='s_chatInfoItem'>{selectedUserObj?.followers?.length + followed ? 1 : 0}</span>
                       </div>
-
                     </Box>
                   </Box>
                   <button className={followed ? "followed" : 'followUser'} onClick={() => handleFollow(selectedUserId)} >{followed ? <>Firends <Check style={{ margin: "0 3px", marginBottom: "3px" }} /></> : "Follow"}</button>

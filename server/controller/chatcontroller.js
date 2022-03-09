@@ -131,23 +131,28 @@ const renameChat = asyncHandler(async (req, res) => {
 });
 
 const addUser = asyncHandler(async (req, res) => {
-  const { chatid, userId } = req.body;
+  let { chatid, userId } = req.body;
+  userId = JSON.parse(userId);
 
-  const added = await Chat.findByIdAndUpdate(
-    chatid,
-    {
-      $push: { users: userId },
-    },
-    { new: true }
-  )
-    .populate("users", "-password")
-    .populate("groupAdmin", "-password");
+  try {
+    const added = await Chat.findByIdAndUpdate(
+      chatid,
+      {
+        $push: { users: userId },
+      },
+      { new: true }
+    )
+      .populate("users", "-password")
+      .populate("groupAdmin", "-password");
 
-  if (!added) {
-    res.sendStatus(400);
-    throw new Error("Chat not found");
-  } else {
-    res.status(200).send(added);
+    if (!added) {
+      res.sendStatus(400);
+      throw new Error("Chat not found");
+    } else {
+      res.status(200).send(added);
+    }
+  } catch (err) {
+    console.log(err);
   }
 });
 

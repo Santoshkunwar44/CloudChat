@@ -4,21 +4,35 @@ import Sidedrawer from '../../components/sidedrawer/Sidedrawer'
 import { Box } from '@chakra-ui/react';
 import Chatbox from '../../components/Chat/chatBox/Chatbox';
 import Mychats from '../../components/Chat/mychats/Mychats';
-import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
 export default function Chatpage() {
 
     const [fetchAgain, setFetchAgain] = useState(false)
     const { user: currentUser, selectedChat, setUser } = ChatState()
-    const navigate = useNavigate()
 
+    const fetchUserAgain = async () => {
+        console.log("inside the fetch user function")
+        const config = {
+            headers: {
+                Authorization: `Bearer ${currentUser.token}`
+            }
+        }
+        try {
+            const res = await axios.get(`http://localhost:8000/api/user/find/${currentUser?._id}`, config);
+            localStorage.setItem("userInfo", JSON.stringify(res.data))
+            console.log("fetch new user", res)
+        } catch (err) {
+            console.log(err)
 
+        }
 
-
+    }
     useEffect(() => {
-
-        
-  
-    }, []);
+        if (currentUser) {
+            console.log("fetching.................")
+            fetchUserAgain()
+        }
+    }, [currentUser])
 
 
     return <Box width={"100%"} maxHeight={{ base: selectedChat ? "100vh" : "auto", md: "100vh" }} height={{ base: selectedChat ? "100vh" : "auto", md: "100vh" }} >

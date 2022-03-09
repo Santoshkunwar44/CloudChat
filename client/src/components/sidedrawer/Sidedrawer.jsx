@@ -159,7 +159,7 @@ export default function Sidedrawer() {
                 </Box>
                 <Tooltip label="Search users to chat">
                     <Button padding={"5px 15px"} width={["200px", "300px", "250px", "300px"]} border={"2px solid #8c7ae6"} onClick={onOpen} variant={"ghost"}>
-                        <i style={{ marginLeft: "20px" ,color:"gray" }} className="fas fa-search" ></i>
+                        <i style={{ marginLeft: "20px", color: "gray" }} className="fas fa-search" ></i>
                         <Text fontSize={[
                             "15px",
                             "12px",
@@ -228,7 +228,7 @@ export default function Sidedrawer() {
 
             <DrawerOverlay />
             <DrawerContent>
-                <DrawerHeader  className='searchText'>
+                <DrawerHeader className='searchText'>
                     Search for Friends
                 </DrawerHeader>
                 <DrawerBody>

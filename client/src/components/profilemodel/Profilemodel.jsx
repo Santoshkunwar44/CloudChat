@@ -12,11 +12,11 @@ export default function Profilemodel({ user, children }) {
             <Modal isOpen={isOpen} onClose={onClose} isCentered>
                 <ModalOverlay />
                 <ModalContent d="flex" alignItems={"center"} flexDirection={"column"} height={"400px"}>
-                    <ModalHeader fontSize={"33px"}>{user.userName}</ModalHeader>
+                    <ModalHeader fontSize={"33px"}>{user?.userName}</ModalHeader>
                     <ModalCloseButton />
                     <ModalBody>
-                        <Image objectFit={"cover"} src={user.pic} borderRadius={"full"} name={user.userName} width={"200px"} height={"200px"} />
-                        <Text fontSize={"24px"}> {user.email}</Text>
+                        <Image objectFit={"cover"} src={user?.pic} borderRadius={"full"} name={user?.userName} width={"200px"} height={"200px"} />
+                        <Text fontSize={"24px"}> {user?.email}</Text>
                     </ModalBody>
 
                     <ModalFooter>

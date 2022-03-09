@@ -49,9 +49,6 @@ export default function GroupChatModal({ children }) {
         try {
             setLoading(true);
             const { data } = await axios.get(`http://localhost:8000/api/user?search=${query}`, config)
-            console.log(data)
-            let filteredFriends = data.filter((f) => data.filter((e) => e._id === f._id))
-            console.log(filteredFriends)
             setSearchResults(data)
             setLoading(false)
             if (data.length < 1) {
@@ -158,7 +155,7 @@ export default function GroupChatModal({ children }) {
             <Modal isOpen={isOpen} onClose={() => { setSelectedUsers([]); setSearchResults([]); onClose() }}>
                 <ModalOverlay />
                 <ModalContent>
-                    <ModalHeader fontSize={"25px"} d={"flex"} alignItems={"center"} justifyContent={"center"}> <Group style={{ fontSize: "52px",color:"#a55eea",marginRight:"10px" }} /> <Text fontSize={"20px"}>Create Groupchat</Text></ModalHeader>
+                    <ModalHeader fontSize={"25px"} d={"flex"} alignItems={"center"} justifyContent={"center"}> <Group style={{ fontSize: "52px", color: "#a55eea", marginRight: "10px" }} /> <Text fontSize={"20px"}>Create Groupchat</Text></ModalHeader>
                     <ModalCloseButton />
                     <ModalBody d={"flex"} alignItems={"center"} flexDir={"column"} >
                         <FormControl onChange={(e) => setGroupChat(e.target.value)} mb={4}>

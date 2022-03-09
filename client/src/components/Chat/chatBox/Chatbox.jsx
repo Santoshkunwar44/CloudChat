@@ -7,6 +7,7 @@ import { SingleUserInfo } from "../SingleUserInfos/SingleUserInfo";
 export default function Chatbox({ fetchAgain, setFetchAgain }) {
 
   const { selectedChat } = ChatState();
+  console.log("chat box refrehed")
   return <Box
     d={{ base: selectedChat ? "flex" : null, md: "flex" }}
     width={{ base: "100%", md: "100%" }}

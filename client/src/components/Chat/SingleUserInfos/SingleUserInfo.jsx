@@ -5,7 +5,7 @@ import "./singleUserInfo.css"
 import { Check } from "@material-ui/icons"
 import { getSenderFull, getSenderId } from "../../../config/senderLogic"
 import axios from 'axios'
-import GroupChatModal from '../../groupchatModal/GroupChatModal'
+import { Addmembergroupmodal } from '../AddMembergroupModal/Addmembergroupmodal'
 export const SingleUserInfo = ({ fetchAgain, setFetchAgain }) => {
     const { user, selectedChat } = ChatState()
     const [selectedUserId, setSelectedUser] = useState(null)
@@ -54,7 +54,6 @@ export const SingleUserInfo = ({ fetchAgain, setFetchAgain }) => {
                     var newFollowings = newuser.followings.filter((e) => e !== id)
                     newuser.followings = newFollowings;
                 } else {
-                    console.log("pushed")
                     if (!newuser.followings.includes(id)) {
                         newuser.followings.push(id)
                     }
@@ -88,17 +87,19 @@ export const SingleUserInfo = ({ fetchAgain, setFetchAgain }) => {
                                     </AvatarGroup>
                                     <Box d={"flex"} width="100%" alignItems={"center"} flexDir="column" justifyContent={"center"}><Text fontSize={"1.3em"} fontWeight={"600"} letterSpacing={"1.4px"}>{selectedChat?.chatName}</Text>
                                         <Text letterSpacing={"1.3px"}>{selectedChat?.users?.length} Members</Text> </Box>
-                                    <GroupChatModal>
-
+                                    <Addmembergroupmodal fetchAgain={fetchAgain} setFetchAgain={setFetchAgain} chatMembers={selectedChat?.users}>
                                         <Button borderRadius={"2px"} fontSize={"15px"} letterSpacing={"1.3px"} bg={"#6c5ce7"} color={"white"} _hover={{ bg: "#a29bfe" }}>Add Member</Button>
-                                    </GroupChatModal>
+                                    </Addmembergroupmodal>
                                 </Box>
                                 <Box width={"100%"} maxH={"65%"} overflowY="scroll" height="65%" textAlign={"center"}>
                                     {
                                         selectedChat?.users?.map((e, i) => (
                                             <Box padding={"5px"} _hover={{ boxShadow: " 0 1px 2px 0 rgb(48 48 48 / 30%), 0 1px 3px 1px rgb(48 48 48 / 15%)" }} cursor={"pointer"} d={"flex"} alignItems={"center"} margin={"5px 0"} >
                                                 <Image marginRight={"13px"} objectFit={"cover"} width={"45px"} height={"45px"} borderRadius={"full"} src={e.pic} />
-                                                <Text fontSize={"15px"} letterSpacing={"1.3px"} fontWeight={"600"}>{e?.userName}</Text>
+                                                <Box textAlign={"start"}>
+                                                    <Text fontSize={"15px"} letterSpacing={"1.3px"} fontWeight={"600"}>{e?.userName}</Text>
+                                                    <Text fontSize={"12px"} letterSpacing={"1px"} fontWeight={"600"} color={"gray"}>{e?.email}</Text>
+                                                </Box>
                                             </Box>
 
                                         ))
